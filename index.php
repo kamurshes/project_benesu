@@ -186,7 +186,6 @@ function StampProtocol($bot,$event)
 
 		RelatedUser($UserID);
 		//error_log($RESULT);
-		$bot->pushMessage($UserID, new \LINE\LINEBot\MessageBuilder\TextMessageBuilder($MSG));
 		//$bot->pushMessage($userId, new \LINE\LINEBot\MessageBuilder\StickerMessageBuilder("1","2"));
 		
 		// データベースへ生活の記録を記載していく
@@ -201,6 +200,22 @@ function StampProtocol($bot,$event)
 		$RESULT=$INSERT->execute();
 		error_log("STEP5:SQLの実行結果");
 		error_log($UserID."のデータを追加しました。");
+
+
+		// 本日何回目かを取得する
+		error_log("STEP1:データベースに接続をする");
+		$pdo = new PDO('mysql:host='.getenv('SERVER').';dbname='.getenv('DATABASE').';charset=utf8',getenv('USERNAME'),getenv('PASSWORD'),array(PDO::ATTR_EMULATE_PREPARES => true));
+		error_log("STEP2:SQL構文を作成する");
+		$INSERT=$pdo ->prepare('SELECT count(UserID) FROM diary WHERE type=:type');
+		error_log("STEP3:各種変数を設定する");
+		$INSERT->bindParam(':type',$type,PDO::PARAM_STR);
+		error_log("STEP4:SQLを実行する");
+		$RESULT=$INSERT->execute();
+		error_log("STEP5:SQLの実行結果");
+		error_log($type."：".$RESULT."でした");
+
+		$bot->pushMessage($UserID, new \LINE\LINEBot\MessageBuilder\TextMessageBuilder($MSG));
+
        }
        catch (PDOException $e)
        {
