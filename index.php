@@ -161,8 +161,16 @@ function StampProtocol($bot,$event)
 		$UserID=$event->getUserId();
 		$packageId=$event->getPackageId();
 		$stickerId=$event->getStickerId();
+		
 		$MSG="パッケージID：".$packageId.", スタンプID:".$stickerId;
-		error_log("===============".$MSG."==================");
+		$MSG="";
+		//error_log("===============".$MSG."==================");
+
+		// ウォーキングを判断する
+		if(getenv('walking-id')==$packageId && getenv('walking-stampid')==$stickerId )$MSG="ウォーキングの記録をしました";
+		if(getenv('drink-id')==$packageId && getenv('dring-stampid')==$stickerId )$MSG="水分補給の記録をしました";
+		if(getenv('toilet-id')==$packageId && getenv('toilet-stampid')==$stickerId )$MSG="トイレの記録をしました";
+
 		RelatedUser($UserID);
 		//error_log($RESULT);
 		$bot->pushMessage($UserID, new \LINE\LINEBot\MessageBuilder\TextMessageBuilder($MSG));
