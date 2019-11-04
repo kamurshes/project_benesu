@@ -206,7 +206,7 @@ function StampProtocol($bot,$event)
 		error_log("STEP1:データベースに接続をする");
 		$pdo = new PDO('mysql:host='.getenv('SERVER').';dbname='.getenv('DATABASE').';charset=utf8',getenv('USERNAME'),getenv('PASSWORD'),array(PDO::ATTR_EMULATE_PREPARES => true));
 		error_log("STEP2:SQL構文を作成する");
-		$SELECT=$pdo ->prepare('SELECT count(id) FROM diary WHERE type=:type AND UserID=:UserID');
+		$SELECT=$pdo ->prepare('SELECT count(id) FROM diary WHERE type=:type AND UserID=:UserID AND created > DATE_SUB(NOW(), INTERVAL 1 DAY)');
 		error_log("STEP3:各種変数を設定する");
 		$SELECT->bindParam(':type',$type,PDO::PARAM_STR);
 		$SELECT->bindParam(':UserID',$UserID,PDO::PARAM_STR);
