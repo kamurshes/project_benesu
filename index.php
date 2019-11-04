@@ -167,14 +167,40 @@ function StampProtocol($bot,$event)
 		//error_log("===============".$MSG."==================");
 
 		// ウォーキングを判断する
-		if(getenv('walking-id')==$packageId && getenv('walking-stampid')==$stickerId )$MSG="ウォーキングの記録をしました";
-		if(getenv('drink-id')==$packageId && getenv('dring-stampid')==$stickerId )$MSG="水分補給の記録をしました";
-		if(getenv('toilet-id')==$packageId && getenv('toilet-stampid')==$stickerId )$MSG="トイレの記録をしました";
+		if(getenv('walking-id')==$packageId && getenv('walking-stampid')==$stickerId )
+		{
+				$type="ウォーキング";
+		}
+
+		if(getenv('drink-id')==$packageId && getenv('drink-stampid')==$stickerId )
+		{
+				$type="水分補給";
+		}
+
+		if(getenv('toilet-id')==$packageId && getenv('toilet-stampid')==$stickerId )
+		{
+				$type="トイレ";
+		}
+
+		$MSG=$type."の記録をしました";
 
 		RelatedUser($UserID);
 		//error_log($RESULT);
 		$bot->pushMessage($UserID, new \LINE\LINEBot\MessageBuilder\TextMessageBuilder($MSG));
 		//$bot->pushMessage($userId, new \LINE\LINEBot\MessageBuilder\StickerMessageBuilder("1","2"));
+		
+		// データベースへ生活の記録を記載していく
+		error_log("STEP1:データベースに接続をする");
+		$pdo = new PDO('mysql:host='.getenv('SERVER').';dbname='.getenv('DATABASE').';charset=utf8',getenv('USERNAME'),getenv('PASSWORD'),array(PDO::ATTR_EMULATE_PREPARES => true));
+		error_log("STEP2:SQL構文を作成する");
+		$INSERT=$pdo ->prepare('INSERT INTO diary(UserID, type) VALUES (:UserID,:type)');
+		error_log("STEP3:各種変数を設定する");
+		$INSERT->bindParam(':UserID',$UserID,PDO::PARAM_STR);
+		$INSERT->bindParam(':type',$type,PDO::PARAM_STR);
+		error_log("STEP4:SQLを実行する");
+		$RESULT=$INSERT->execute();
+		error_log("STEP5:SQLの実行結果");
+		error_log($UserID."のデータを追加しました。");
        }
        catch (PDOException $e)
        {
