@@ -206,13 +206,18 @@ function StampProtocol($bot,$event)
 		error_log("STEP1:データベースに接続をする");
 		$pdo = new PDO('mysql:host='.getenv('SERVER').';dbname='.getenv('DATABASE').';charset=utf8',getenv('USERNAME'),getenv('PASSWORD'),array(PDO::ATTR_EMULATE_PREPARES => true));
 		error_log("STEP2:SQL構文を作成する");
-		$INSERT=$pdo ->prepare('SELECT count(id) FROM diary WHERE type=:type');
+		$SELECT=$pdo ->prepare('SELECT count(id) FROM diary WHERE type=:type AND UserID=:UserID');
 		error_log("STEP3:各種変数を設定する");
-		$INSERT->bindParam(':type',$type,PDO::PARAM_STR);
+		$ISELECT->bindParam(':type',$type,PDO::PARAM_STR);
+		$ISELECT->bindParam(':UserID',$UserID,PDO::PARAM_STR);
 		error_log("STEP4:SQLを実行する");
-		$RESULT=$INSERT->execute();
-		error_log("STEP5:SQLの実行結果");
-		error_log($type."：".$RESULT."でした");
+		$SELECT->execute();
+		$RESULTS=$SELECT->fetchAll();
+		foreach($RESULTS as $A)
+		{
+			error_log("STEP5:SQLの実行結果");
+			error_log($type."：".$A."でした");
+		}
 
 		$bot->pushMessage($UserID, new \LINE\LINEBot\MessageBuilder\TextMessageBuilder($MSG));
 
