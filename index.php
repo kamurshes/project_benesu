@@ -166,6 +166,15 @@ function StampProtocol($bot,$event)
 		$MSG="";
 		//error_log("===============".$MSG."==================");
 		$type="";
+
+		if(getenv('goodmorning-id')==$packageId && getenv('goodmorning-stampid')==$stickerId )
+		{
+				$type="起床";
+		}
+		if(getenv('goodevening-id')==$packageId && getenv('goodevening-stampid')==$stickerId )
+		{
+				$type="就寝";
+		}
 		// ウォーキングを判断する
 		if(getenv('walking-id')==$packageId && getenv('walking-stampid')==$stickerId )
 		{
@@ -222,6 +231,8 @@ function StampProtocol($bot,$event)
 			if($A['count(id)']>0)
 			{
 				$MSG=$type."は、本日 ".$A['count(id)']." 回目です";
+				if($type=="起床")$MSG="おはようございます";
+				if($type=="就寝")$MSG="おやすみなさい";
 			}
 		}
 
