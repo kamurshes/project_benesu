@@ -208,8 +208,8 @@ function StampProtocol($bot,$event)
 		error_log("STEP2:SQL構文を作成する");
 		$SELECT=$pdo ->prepare('SELECT count(id) FROM diary WHERE type=:type AND UserID=:UserID');
 		error_log("STEP3:各種変数を設定する");
-		$ISELECT->bindParam(':type',$type,PDO::PARAM_STR);
-		$ISELECT->bindParam(':UserID',$UserID,PDO::PARAM_STR);
+		$SELECT->bindParam(':type',$type,PDO::PARAM_STR);
+		$SELECT->bindParam(':UserID',$UserID,PDO::PARAM_STR);
 		error_log("STEP4:SQLを実行する");
 		$SELECT->execute();
 		$RESULTS=$SELECT->fetchAll();
