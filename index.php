@@ -216,7 +216,7 @@ function StampProtocol($bot,$event)
 		foreach($RESULTS as $A)
 		{
 			error_log("STEP5:SQLの実行結果");
-			error_log($type."：".$A."でした");
+			error_log($type."：".$A['count(id)']."でした");
 		}
 
 		$bot->pushMessage($UserID, new \LINE\LINEBot\MessageBuilder\TextMessageBuilder($MSG));
