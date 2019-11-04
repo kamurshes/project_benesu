@@ -165,7 +165,7 @@ function StampProtocol($bot,$event)
 		$MSG="パッケージID：".$packageId.", スタンプID:".$stickerId;
 		$MSG="";
 		//error_log("===============".$MSG."==================");
-
+		$type="";
 		// ウォーキングを判断する
 		if(getenv('walking-id')==$packageId && getenv('walking-stampid')==$stickerId )
 		{
@@ -181,6 +181,8 @@ function StampProtocol($bot,$event)
 		{
 				$type="トイレ";
 		}
+
+		if($type=="")return;
 
 		$MSG=$type."の記録をしました";
 
@@ -217,7 +219,10 @@ function StampProtocol($bot,$event)
 		{
 			error_log("STEP5:SQLの実行結果");
 			error_log($type."：".$A['count(id)']."でした");
-			$MSG=$type."は、本日 ".$A['count(id)']." 回目です";
+			if($A['count(id)']>0)
+			{
+				$MSG=$type."は、本日 ".$A['count(id)']." 回目です";
+			}
 		}
 
 		$bot->pushMessage($UserID, new \LINE\LINEBot\MessageBuilder\TextMessageBuilder($MSG));
