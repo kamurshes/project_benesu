@@ -262,9 +262,9 @@ function BeaconProtocol($bot,$event)
 		$MSG="退出しました";
 	}
 	
-	$QR=new LINE\LINEBot\QuickReplyBuilder\ButtonBuilder\QuickReplyButtonBuilder(new LINE\LINEBot\TemplateActionBuilder\PostbackTemplateActionBuilder("トイレ","トイレ","トイレ"),null)->buildQuickReplyButton();
+	$QR=new LINE\LINEBot\QuickReplyBuilder\ButtonBuilder\QuickReplyButtonBuilder(new LINE\LINEBot\TemplateActionBuilder\PostbackTemplateActionBuilder("トイレ","トイレ","トイレ"),null);
 	//error_log(print_r($QR,true));
-	$_MSG=new LINE\LINEBot\MessageBuilder\TextMessageBuilder($MSG,$QR);
+	$_MSG=new LINE\LINEBot\MessageBuilder\TextMessageBuilder($MSG,$QR->buildQuickReplyButton());
 	error_log(print_r($_MSG,true));
 	$bot->replyMessage($event->getReplyToken(), $_MSG);
 
