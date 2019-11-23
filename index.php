@@ -246,6 +246,12 @@ function StampProtocol($bot,$event)
        }
 }
 
+function BeaconProtocol($bot,$event)
+{
+
+	error_log(print_r($event,true));
+
+}
 
 // ===== PROTOCOL =====
 
@@ -294,6 +300,11 @@ foreach($events as $event)
 	if(($event instanceof LINE\LINEBot\Event\MessageEvent\StickerMessage))
 	{
 		StampProtocol($bot,$event);
+	}
+	// BEACONの処理
+	if(($event instanceof LINE\LINEBot\Event\BeaconDetectionEvent))
+	{
+		BeaconProtocol($bot,$event);
 	}
 }
 
