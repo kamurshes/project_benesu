@@ -263,7 +263,7 @@ function BeaconProtocol($bot,$event)
 	}
 	
 	$_MSG=new \LINE\LINEBot\MessageBuilder\TextMessageBuilder($MSG);
-	$_MSG["quickReply:LINE\LINEBot\MessageBuilder\TextMessageBuilder:private"] = ["items"=>["type"=>"action", "imageUrl"=> "https://example.com/sushi.png","action"=>["type": "message","label"=>"Sushi","text"=>"Sushi"] ]];
+	$_MSG->quickReply = ["items"=>["type"=>"action", "imageUrl"=> "https://example.com/sushi.png","action"=>["type": "message","label"=>"Sushi","text"=>"Sushi"]]];
 	$bot->replyMessage($event->getReplyToken(), ($_MSG));
 	error_log(print_r($_MSG,true));
 	error_log(print_r($QR,true));
