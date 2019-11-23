@@ -264,7 +264,7 @@ function BeaconProtocol($bot,$event)
 	
 	$_MSG=new LINE\LINEBot\MessageBuilder\TextMessageBuilder($MSG);
 	error_log(print_r($_MSG,true));
-	$QR=new LINE\LINEBot\QuickReplyBuilder\ButtonBuilder(new LINE\LINEBot\TemplateActionBuilder("テスト1","テスト2","テスト3"),null);
+	$QR=new LINE\LINEBot\QuickReplyBuilder\ButtonBuilder\QuickReplyButtonBuilder(new LINE\LINEBot\TemplateActionBuilder("テスト1","テスト2","テスト3"),null);
 	error_log(print_r($QR,true));
 	//$_MSG->quickReply = ["items"=>["type"=>"action", "imageUrl"=> "https://example.com/sushi.png","action"=>["type": "message","label"=>"Sushi","text"=>"Sushi"]]];
 	//$bot->replyMessage($event->getReplyToken(), ($_MSG));
