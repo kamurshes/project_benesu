@@ -250,6 +250,7 @@ function BeaconProtocol($bot,$event)
 {
 
 	error_log(print_r($event,true));
+	error_log($event->beacon->type);
 
 }
 
