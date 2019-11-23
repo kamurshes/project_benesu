@@ -16,6 +16,111 @@ $events = $bot->parseEventRequest(file_get_contents('php://input'),$signature);
 unset($FLUG);
 $FLUG="Text";
 
+
+// ===== CLASS =====
+class LineFunctions {
+
+    private function replyMessage($message, $channel_access_token) {
+        $header = array(
+            "Content-Type: application/json",
+            'Authorization: Bearer ' . $channel_access_token,
+        );
+        $context = stream_context_create(array(
+            "http" => array(
+                "method" => "POST",
+                "header" => implode("\r\n", $header),
+                "content" => json_encode($message),
+                "ignore_errors" => true,
+            ),
+        ));
+        $response = file_get_contents('https://api.line.me/v2/bot/message/reply', false, $context);
+        if (strpos($http_response_header[0], '200') === false) {
+            http_response_code(500);
+        }
+
+        return $response;
+    }
+
+
+    function replyMessageText($reply_token, $send_messages, $channel_access_token){
+        $reply_message = array(
+            'replyToken' => $reply_token,
+            'messages' => $send_messages
+        );
+
+        return $this->replyMessage($reply_message, $channel_access_token);
+    }
+
+
+    function createQuickReplyBodyProto(){
+        $send_messages = array(
+            'type' => 'text',
+            'text' => '選択してください。',
+            'quickReply' => array(
+                'items' => array(
+                    array(
+                        'type' => 'action',
+                        'action' => array(
+                            'type' => 'postback',
+                            'label' => 'Data Send',
+                            'data' => 'PostBackData',
+                            'displayText' => 'ポストバックデータを送ります。',
+                        )
+                    ),
+                    array(
+                        'type' => 'action',
+                        'action' => array(
+                            'type' => 'message',
+                            'label' => 'Message Send',
+                            'text' => 'テキストを送信します。',
+                        )
+                    ),
+                    array(
+                        'type' => 'action',
+                        'action' => array(
+                            'type' => 'datetimepicker',
+                            'label' => 'Datetime Send',
+                            'data' => 'DateTimeData',
+                            'mode' => 'datetime',
+                            'initial' => '2018-12-19t00:00',
+                            'max' => '2020-12-31t23:59',
+                            'min' => '2015-01-01t00:00',
+                        )
+                    ),
+                    array(
+                        'type' => 'action',
+                        'action' => array(
+                            'type' => 'camera',
+                            'label' => 'Camera Start',
+                        )
+                    ),
+                    array(
+                        'type' => 'action',
+                        'action' => array(
+                            'type' => 'cameraRoll',
+                            'label' => 'CameraRoll Start',
+                        )
+                    ),
+                    array(
+                        'type' => 'action',
+                        'action' => array(
+                            'type' => 'location',
+                            'label' => 'Location Send',
+                        )
+                    ),
+                )
+            )
+        );
+
+        return $send_messages;
+    }
+
+}
+// ===== CLASS =====
+
+
+
+
 error_log("=====共通処理=====");
 
 function RelatedUser($UserID)
@@ -262,12 +367,10 @@ function BeaconProtocol($bot,$event)
 		$MSG="退出しました";
 	}
 	
-	$QR=new LINE\LINEBot\QuickReplyBuilder\ButtonBuilder\QuickReplyButtonBuilder(new LINE\LINEBot\TemplateActionBuilder\PostbackTemplateActionBuilder("トイレ","トイレ","トイレ"),null);
-	//error_log(print_r($QR,true));
-	//$_MSG=new LINE\LINEBot\MessageBuilder\TextMessageBuilder($MSG,$QR->buildQuickReplyButton());
-	$_MSG=new LINE\LINEBot\QuickReplyBuilder\QuickReplyMessageBuilder(array($QR));
-	error_log(print_r($_MSG,true));
-	$bot->replyMessage($event->getReplyToken(), $_MSG);
+	$line = new LineFunctions();
+	//$bot->replyMessage($event->getReplyToken(), $_MSG);
+	// getenv('USERNAME')
+	$send_response = $line->replyMessageText($event->getReplyToken(), $send_messages, getenv('CHANNEL_ACCESS_TOKEN'));
 
 
 }
