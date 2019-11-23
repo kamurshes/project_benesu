@@ -262,10 +262,77 @@ function BeaconProtocol($bot,$event)
 		$MSG="退出しました";
 	}
 	
-	$bot->replyMessage($event->getReplyToken(), new \LINE\LINEBot\MessageBuilder\TextMessageBuilder($MSG));
+	//$bot->replyMessage($event->getReplyToken(), new \LINE\LINEBot\MessageBuilder\TextMessageBuilder($MSG));
+	 $reply_message = array(
+            'messages' => createQuickReplyBodyProto();
+        );
+	$bot->replyMessage($event->getReplyToken(),$reply_message);
 
 
 }
+
+    function createQuickReplyBodyProto(){
+        $send_messages = array(
+            'type' => 'text',
+            'text' => '選択してください。',
+            'quickReply' => array(
+                'items' => array(
+                    array(
+                        'type' => 'action',
+                        'action' => array(
+                            'type' => 'postback',
+                            'label' => 'Data Send',
+                            'data' => 'PostBackData',
+                            'displayText' => 'ポストバックデータを送ります。',
+                        )
+                    ),
+                    array(
+                        'type' => 'action',
+                        'action' => array(
+                            'type' => 'message',
+                            'label' => 'Message Send',
+                            'text' => 'テキストを送信します。',
+                        )
+                    ),
+                    array(
+                        'type' => 'action',
+                        'action' => array(
+                            'type' => 'datetimepicker',
+                            'label' => 'Datetime Send',
+                            'data' => 'DateTimeData',
+                            'mode' => 'datetime',
+                            'initial' => '2018-12-19t00:00',
+                            'max' => '2020-12-31t23:59',
+                            'min' => '2015-01-01t00:00',
+                        )
+                    ),
+                    array(
+                        'type' => 'action',
+                        'action' => array(
+                            'type' => 'camera',
+                            'label' => 'Camera Start',
+                        )
+                    ),
+                    array(
+                        'type' => 'action',
+                        'action' => array(
+                            'type' => 'cameraRoll',
+                            'label' => 'CameraRoll Start',
+                        )
+                    ),
+                    array(
+                        'type' => 'action',
+                        'action' => array(
+                            'type' => 'location',
+                            'label' => 'Location Send',
+                        )
+                    ),
+                )
+            )
+        );
+
+        return $send_messages;
+    }
 
 // ===== PROTOCOL =====
 
