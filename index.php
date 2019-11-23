@@ -249,8 +249,8 @@ function StampProtocol($bot,$event)
 function BeaconProtocol($bot,$event)
 {
 
-	error_log(print_r($event,true));
-	error_log($event->beacon->type);
+	//error_log(print_r($event,true));
+	error_log($event->getBeaconEventType());
 
 }
 
