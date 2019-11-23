@@ -262,12 +262,10 @@ function BeaconProtocol($bot,$event)
 		$MSG="退出しました";
 	}
 	
-	//$bot->replyMessage($event->getReplyToken(), new \LINE\LINEBot\MessageBuilder\TextMessageBuilder($MSG));
-	$MSG=createQuickReplyBodyProto();
-	 $reply_message = array(
-            'messages' => $MSG
-        );
-	$bot->replyMessage($event->getReplyToken(),new LINE\LINEBot\QuickReplyBuilder\QuickReplyButtonBuilder(new LINE\LINEBot\QuickReplyBuilder\QuickReplyButtonBuilder(new LINE\LINEBot\TemplateActionBuilder("テスト1","テスト2","テスト3"),null)));
+	$_MSG=new \LINE\LINEBot\MessageBuilder\TextMessageBuilder($MSG);
+	$bot->replyMessage($event->getReplyToken(), ($_MSG));
+	error_log(print_r($_MSG,true));
+	//$bot->replyMessage($event->getReplyToken(),(new LINE\LINEBot\QuickReplyBuilder\QuickReplyButtonBuilder(new LINE\LINEBot\TemplateActionBuilder("テスト1","テスト2","テスト3"),null)));
 
 
 }
