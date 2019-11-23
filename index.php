@@ -265,7 +265,18 @@ function BeaconProtocol($bot,$event)
 	$QR=new LINE\LINEBot\QuickReplyBuilder\ButtonBuilder\QuickReplyButtonBuilder(new LINE\LINEBot\TemplateActionBuilder\PostbackTemplateActionBuilder("トイレ","トイレ","トイレ"),null);
 	//error_log(print_r($QR,true));
 	//$_MSG=new LINE\LINEBot\MessageBuilder\TextMessageBuilder($MSG,$QR->buildQuickReplyButton());
-	$_MSG=new LINE\LINEBot\QuickReplyBuilder\QuickReplyMessageBuilder($QR->buildQuickReplyButton());
+	$_MSG=new LINE\LINEBot\QuickReplyBuilder\QuickReplyMessageBuilder('quickReply' => array(
+                'items' => array(
+                    array(
+                        'type' => 'action',
+                        'action' => array(
+                            'type' => 'postback',
+                            'label' => 'Data Send',
+                            'data' => 'PostBackData',
+                            'displayText' => 'ポストバックデータを送ります。',
+		    ))
+	    )
+    ));
 	error_log(print_r($_MSG,true));
 	$bot->replyMessage($event->getReplyToken(), $_MSG);
 
