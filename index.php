@@ -263,8 +263,9 @@ function BeaconProtocol($bot,$event)
 	}
 	
 	//$bot->replyMessage($event->getReplyToken(), new \LINE\LINEBot\MessageBuilder\TextMessageBuilder($MSG));
+	$MSG=createQuickReplyBodyProto();
 	 $reply_message = array(
-            'messages' => createQuickReplyBodyProto();
+            'messages' => $MSG
         );
 	$bot->replyMessage($event->getReplyToken(),$reply_message);
 
