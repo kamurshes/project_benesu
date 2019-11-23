@@ -45,7 +45,7 @@ class LineFunctions {
     function replyMessageText($reply_token, $send_messages, $channel_access_token){
         $reply_message = array(
             'replyToken' => $reply_token,
-            'message' => $send_messages
+            'messages' => $send_messages
         );
 
         return $this->replyMessage($reply_message, $channel_access_token);
@@ -257,6 +257,95 @@ function FollowProtocol($bot,$event)
 	}
 }
 
+// が送信されてきた際の処理
+function TextProtocol($bot,$event)
+{
+	error_log("関数：テキスト処理を実行");
+        try
+        {
+		$UserID=$event->getUserId();
+		
+		$MSG="";
+		//error_log("===============".$MSG."==================");
+		$Text=$event->getText();
+
+		if($Text=="起床")
+		{
+				$type="起床";
+		}
+		if($Text=="就寝")
+		{
+				$type="就寝";
+		}
+		// ウォーキングを判断する
+		if($Text=="ウォーキング")
+		{
+				$type="ウォーキング";
+		}
+
+		if($Text=="水分補給")
+		{
+				$type="水分補給";
+		}
+
+		if($Text=="トイレ")
+		{
+				$type="トイレ";
+		}
+
+
+		$MSG=$type."の記録をしました";
+
+		RelatedUser($UserID);
+		//error_log($RESULT);
+		//$bot->pushMessage($userId, new \LINE\LINEBot\MessageBuilder\StickerMessageBuilder("1","2"));
+		
+		// データベースへ生活の記録を記載していく
+		error_log("STEP1:データベースに接続をする");
+		$pdo = new PDO('mysql:host='.getenv('SERVER').';dbname='.getenv('DATABASE').';charset=utf8',getenv('USERNAME'),getenv('PASSWORD'),array(PDO::ATTR_EMULATE_PREPARES => true));
+		error_log("STEP2:SQL構文を作成する");
+		$INSERT=$pdo ->prepare('INSERT INTO diary(UserID, type) VALUES (:UserID,:type)');
+		error_log("STEP3:各種変数を設定する");
+		$INSERT->bindParam(':UserID',$UserID,PDO::PARAM_STR);
+		$INSERT->bindParam(':type',$type,PDO::PARAM_STR);
+		error_log("STEP4:SQLを実行する");
+		$RESULT=$INSERT->execute();
+		error_log("STEP5:SQLの実行結果");
+		error_log($UserID."のデータを追加しました。");
+
+
+		// 本日何回目かを取得する
+		error_log("STEP1:データベースに接続をする");
+		$pdo = new PDO('mysql:host='.getenv('SERVER').';dbname='.getenv('DATABASE').';charset=utf8',getenv('USERNAME'),getenv('PASSWORD'),array(PDO::ATTR_EMULATE_PREPARES => true));
+		error_log("STEP2:SQL構文を作成する");
+		$SELECT=$pdo ->prepare('SELECT count(id) FROM diary WHERE type=:type AND UserID=:UserID AND created > DATE_SUB(NOW(), INTERVAL 1 DAY)');
+		error_log("STEP3:各種変数を設定する");
+		$SELECT->bindParam(':type',$type,PDO::PARAM_STR);
+		$SELECT->bindParam(':UserID',$UserID,PDO::PARAM_STR);
+		error_log("STEP4:SQLを実行する");
+		$SELECT->execute();
+		$RESULTS=$SELECT->fetchAll();
+		foreach($RESULTS as $A)
+		{
+			error_log("STEP5:SQLの実行結果");
+			error_log($type."：".$A['count(id)']."でした");
+			if($A['count(id)']>0)
+			{
+				$MSG=$type."は、本日 ".$A['count(id)']." 回目です";
+				if($type=="起床")$MSG="おはようございます";
+				if($type=="就寝")$MSG="おやすみなさい";
+			}
+		}
+
+		$bot->pushMessage($UserID, new \LINE\LINEBot\MessageBuilder\TextMessageBuilder($MSG));
+
+       }
+       catch (PDOException $e)
+       {
+                exit('データベース接続失敗。'.$e->getMessage());
+                error_log($e->getMessage());
+       }
+}
 // スタンプが送信されてきた際の処理
 function StampProtocol($bot,$event)
 {
@@ -420,6 +509,11 @@ foreach($events as $event)
 	{
 		FollowProtocol($bot,$event);
 		GetProfile($bot,$event);
+	}
+	// テキストの処理
+	if(($event instanceof LINE\LINEBot\Event\MessageEvent\TextMessage))
+	{
+		TextProtocol($bot,$event);
 	}
 	// スタンプの処理
 	if(($event instanceof LINE\LINEBot\Event\MessageEvent\StickerMessage))
