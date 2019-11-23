@@ -372,6 +372,7 @@ function BeaconProtocol($bot,$event)
 	$line = new LineFunctions();
 	$send_messages = $line->createQuickReplyBodyProto();
 	$send_response = $line->replyMessageText($event->getReplyToken(), $send_messages, getenv('CHANNEL_ACCESS_TOKEN'));
+	error_log($send_response);
 
 
 }
