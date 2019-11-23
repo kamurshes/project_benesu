@@ -263,7 +263,6 @@ function BeaconProtocol($bot,$event)
 	}
 	
 	$_MSG=new LINE\LINEBot\MessageBuilder\TextMessageBuilder($MSG,["items"=>["type"=>"action","imageUrl"=>"","action"=>["type"=>"message","label"=>"Sushi","text"=>"Sushi"]]]);
-	$_MSG->quickReply="test";
 	error_log(print_r($_MSG,true));
 	//$QR=new LINE\LINEBot\QuickReplyBuilder\ButtonBuilder\QuickReplyButtonBuilder(new LINE\LINEBot\TemplateActionBuilder\PostbackTemplateActionBuilder("トイレ","トイレ","トイレ"),null);
 	//error_log(print_r($QR,true));
