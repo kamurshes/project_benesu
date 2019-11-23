@@ -249,8 +249,21 @@ function StampProtocol($bot,$event)
 function BeaconProtocol($bot,$event)
 {
 
+	$UserID=$event->getUserId();
 	//error_log(print_r($event,true));
-	error_log($event->getBeaconEventType());
+	$beacon_type=$event->getBeaconEventType();
+
+	if($beacon_type=="enter")
+	{
+		$msg="入室しました";
+	} 
+	elseif(( $beacon_type=="leave" ))
+	{
+		$msg="退出しました";
+	}
+	
+	$bot->replyMessage($event->getReplyToken(), new \LINE\LINEBot\MessageBuilder\TextMessageBuilder($MSG));
+
 
 }
 
