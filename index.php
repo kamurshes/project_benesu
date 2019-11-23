@@ -255,11 +255,11 @@ function BeaconProtocol($bot,$event)
 
 	if($beacon_type=="enter")
 	{
-		$msg="入室しました";
+		$MSG="入室しました";
 	} 
 	elseif(( $beacon_type=="leave" ))
 	{
-		$msg="退出しました";
+		$MSG="退出しました";
 	}
 	
 	$bot->replyMessage($event->getReplyToken(), new \LINE\LINEBot\MessageBuilder\TextMessageBuilder($MSG));
