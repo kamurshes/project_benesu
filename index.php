@@ -45,7 +45,7 @@ class LineFunctions {
     function replyMessageText($reply_token, $send_messages, $channel_access_token){
         $reply_message = array(
             'replyToken' => $reply_token,
-            'messages' => $send_messages
+            'message' => $send_messages
         );
 
         return $this->replyMessage($reply_message, $channel_access_token);
